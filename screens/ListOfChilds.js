@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, Button, TextInput, TouchableOpacity, ToastAndro
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 //SignUp Screen Code-------
-const AddWords = ({ navigation }) => {
+const ListOfChilds = ({ navigation }) => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -13,9 +13,9 @@ const AddWords = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={styles.header}>
+                {/* <View style={styles.header}>
                     <Text style={{ fontSize: 32, color: '#3EB489', fontWeight: 'bold' }}> Students </Text>
-                </View>
+                </View> */}
                 <TouchableOpacity style={styles.cardView} onPress={()=>navigation.navigate('SelectWord')}>
                     <Text style={styles.card_title}> Asam </Text>
                 </TouchableOpacity>
@@ -30,7 +30,7 @@ const AddWords = ({ navigation }) => {
     );
 }
 
-export default AddWords;
+export default ListOfChilds;
 
 const styles = StyleSheet.create({
     container: {

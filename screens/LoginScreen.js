@@ -3,19 +3,39 @@ import { StyleSheet, View, Text, Button, TextInput, TouchableOpacity, ToastAndro
 import Icon from 'react-native-vector-icons/MaterialIcons';
 // import { CheckBox } from 'react-native-elements';
 // import { Checkbox } from 'react-native-paper';
+import { openDatabase } from 'react-native-sqlite-storage';
 //Login Screen Code
 const LoginScreen = ({ navigation }) => {
-
+  var db = openDatabase({ name: 'KidsTalkingDictionaryDB.db', createFromLocation: 1 });
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   var UserName = name;
   var Password = password;
 
-
+  const login = () => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        'SELECT * FROM Users where Name=? and Password=?',
+        [name,password],
+        (tx, results) => {
+          if(results.rows.length>0){
+            navigation.navigate("Home")
+            // alert('Login Successfully')
+          }else{
+            alert('Invalid username or password.')
+          }
+          var temp = [];
+          for (let i = 0; i < results.rows.length; ++i)
+            temp.push(results.rows.item(i));
+          console.log(temp);
+        }
+      );
+    });
+  }
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={{ fontSize: 32, color: '#ffffff', fontWeight:'bold' }}>Login!</Text>
+        <Text style={{ fontSize: 32, color: '#ffffff', fontWeight: 'bold' }}>Login!</Text>
       </View>
       <View style={styles.form}>
 
@@ -45,7 +65,7 @@ const LoginScreen = ({ navigation }) => {
         <TouchableOpacity
           style={styles.btnLogin}
           // onPress={()=>{LoginUser()}}
-          onPress={() => { navigation.navigate("Users") }}
+          onPress={() => login()}
         >
           <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>Login</Text>
         </TouchableOpacity>
@@ -66,16 +86,16 @@ export default LoginScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,  backgroundColor: '#ddd', 
+    flex: 1, backgroundColor: '#ddd',
     // justifyContent: 'center'
   },
   header: {
     height: '30%',
     alignItems: 'center',
-    justifyContent:'center',
-    backgroundColor:'#3EB489',
-    borderBottomRightRadius:130,
-    marginBottom:40,
+    justifyContent: 'center',
+    backgroundColor: '#3EB489',
+    borderBottomRightRadius: 130,
+    marginBottom: 40,
   },
   textInput: {
     margin: 10,

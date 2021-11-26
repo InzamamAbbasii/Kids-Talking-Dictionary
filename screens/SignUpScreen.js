@@ -2,14 +2,47 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, Button, TextInput, TouchableOpacity, ToastAndroid, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { openDatabase } from 'react-native-sqlite-storage';
 //SignUp Screen Code-------
 const SignUpScreen = ({ navigation }) => {
+  var db = openDatabase({ name: 'KidsTalkingDictionaryDB.db', createFromLocation: 1 });
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [accountType, setAccountType] = useState();//test
 
+  const signUp=()=>{
+
+    // db.transaction((tx) => {
+    //   tx.executeSql(
+    //     'SELECT * FROM sqlite_master',
+    //     [],
+    //     (tx, results) => {
+    //       var temp = [];
+    //         for (let i = 0; i < results.rows.length; ++i)
+    //           temp.push(results.rows.item(i));
+    //         console.log(temp);
+    //       }
+    //   );
+    // });
+  console.log(name,email,password);
+   //store value to database
+   db.transaction(function (tx) {
+    tx.executeSql(
+      'INSERT INTO Users (Name,Email,Password) VALUES (?,?,?)',
+      [name,email,password],
+      (tx, results) => {
+        console.log('Results', results.rowsAffected);
+        if (results.rowsAffected > 0) {
+          alert('Data Inserted Successfully....');
+        } else alert('Failed....');
+      }
+    );
+  });
+  //end store data
+
+  }
   return (
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         <View style={styles.header}>
@@ -55,7 +88,7 @@ const SignUpScreen = ({ navigation }) => {
             />
           </View>
 
-          <TouchableOpacity style={styles.btnSignUp}
+          <TouchableOpacity style={styles.btnSignUp} onPress={()=>signUp()}
          >
             <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>SignUp</Text>
           </TouchableOpacity>
