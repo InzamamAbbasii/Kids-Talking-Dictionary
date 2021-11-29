@@ -13,7 +13,7 @@ import ListOfChilds from './screens/ListOfChilds';
 import SelectWord from './screens/SelectWord';
 import AddChild from './screens/AddChild';
 import Students from './screens/Students';
-
+import ListOfWords from './screens/ListOfWords';
 const Stack = createNativeStackNavigator();
 
 function App() {
@@ -37,6 +37,7 @@ function App() {
         <Stack.Screen name="Students" component={Students} />
         <Stack.Screen name="SelectWord" component={SelectWord} />
         <Stack.Screen name="Users" component={Users} />
+        <Stack.Screen name="ListOfWords" component={ListOfWords} />
       </Stack.Navigator>
     </NavigationContainer>
   );

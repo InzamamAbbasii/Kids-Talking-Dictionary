@@ -22,13 +22,13 @@ const Home = ({ navigation }) => {
         >
           <Text style={{ fontSize: 25, fontWeight: 'bold', color: '#eee' }}> Add Word </Text>
         </TouchableOpacity>
-        <TouchableOpacity
+        <TouchableOpacity onPress={()=>navigation.navigate('ListOfWords')}
           style={styles.btn}
         >
           <Text style={{ fontSize: 25, fontWeight: 'bold', color: '#eee' }}> List of Words </Text>
         </TouchableOpacity>
        
-        <TouchableOpacity
+        <TouchableOpacity onPress={()=>navigation.navigate('SelectWord')}
           style={styles.btn}
         >
           <Text style={{ fontSize: 25, fontWeight: 'bold', color: '#eee' }}> Assign Words to Childs </Text>
