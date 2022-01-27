@@ -16,10 +16,10 @@ const LoginScreen = ({ navigation }) => {
     db.transaction((tx) => {
       tx.executeSql(
         'SELECT * FROM Users where Name=? and Password=?',
-        [name,password],
+        [name.toLocaleLowerCase(),password],
         (tx, results) => {
           if(results.rows.length>0){
-            navigation.navigate("Home")
+            navigation.navigate("Dashboard")
             // alert('Login Successfully')
           }else{
             alert('Invalid username or password.')

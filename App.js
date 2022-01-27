@@ -10,10 +10,13 @@ import SignUpScreen from './screens/SignUpScreen';
 import Home from './screens/Home';
 import Users from './screens/Users';
 import ListOfChilds from './screens/ListOfChilds';
-import SelectWord from './screens/SelectWord';
+import AssignWords from './screens/AssignWords';
 import AddChild from './screens/AddChild';
-import Students from './screens/Students';
+import Dashboard from './screens/Dashboard';
+import AddWords from './screens/AddWord';
 import ListOfWords from './screens/ListOfWords';
+import MyWords from './screens/MyWords';
+import WordDetail from './screens/WordDetail';
 const Stack = createNativeStackNavigator();
 
 function App() {
@@ -29,15 +32,18 @@ function App() {
             fontWeight: 'bold',
           },
           }}>
+        <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} options={{headerShown:false}}/>
         <Stack.Screen name="SignUpScreen" component={SignUpScreen} options={{headerShown:false}}/>
-        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="Dashboard" component={Dashboard} />
         <Stack.Screen name="AddChild" component={AddChild} />
         <Stack.Screen name="ListOfChilds" component={ListOfChilds} />
-        <Stack.Screen name="Students" component={Students} />
-        <Stack.Screen name="SelectWord" component={SelectWord} />
+        <Stack.Screen name="AddWords" component={AddWords} />
+        <Stack.Screen name="AssignWords" component={AssignWords} />
         <Stack.Screen name="Users" component={Users} />
         <Stack.Screen name="ListOfWords" component={ListOfWords} />
+        <Stack.Screen name="MyWords" component={MyWords} />
+        <Stack.Screen name="WordDetail" component={WordDetail} />
       </Stack.Navigator>
     </NavigationContainer>
   );

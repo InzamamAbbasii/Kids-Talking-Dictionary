@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView, FlatList } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Image, FlatList } from 'react-native';
 import { openDatabase } from 'react-native-sqlite-storage';
 
-const ListOfWords = ({ navigation }) => {
+const MyWords = ({ navigation, route }) => {
     var db = openDatabase({ name: 'KidsTalkingDictionaryDB.db', createFromLocation: 1 });
     const [data, setData] = useState([]);
     const getAllWords = () => {
         setData([]);
         db.transaction((tx) => {
             tx.executeSql(
-                'Select * from Words',
+                `Select * from Words Join AssignWords on Words.Id=AssignWords.WordId Where AssignWords.ChildId=${route.params.ChildId} AND AssignWords.IsAssign=1`,
                 [],
                 (tx, results) => {
                     if (results.rows.length > 0) {
@@ -20,10 +20,11 @@ const ListOfWords = ({ navigation }) => {
                                 Id: results.rows.item(index).Id,
                                 Word: results.rows.item(index).Word,
                                 Meaning: results.rows.item(index).Meaning,
+                                Base64Image: results.rows.item(index).Image,
                             }])
                         }
                     } else {
-                        alert('No Child Found...')
+                        alert('No Record Found...')
                     }
                 }
             );
@@ -32,11 +33,10 @@ const ListOfWords = ({ navigation }) => {
     useEffect(() => {
         getAllWords();
     }, []);
-    const renderItem = ({item}) => {
+    const renderItem = ({ item }) => {
         return (
-            <TouchableOpacity style={styles.cardView} >
+            <TouchableOpacity style={styles.cardView} onPress={()=>navigation.navigate('WordDetail',{Id:item.Id,Word:item.Word,Meaning:item.Meaning,Image:item.Base64Image})}>
                 <Text style={styles.card_title}>{item.Word} </Text>
-                <Text style={[styles.card_title,{fontWeight:'normal'}]}>{item.Meaning} </Text>
             </TouchableOpacity>
         );
     }
@@ -51,11 +51,22 @@ const ListOfWords = ({ navigation }) => {
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={renderItem}
             />
+            {/* <View style={{ height: 200, padding: 10, backgroundColor: 'pink' }}>
+                            <Image
+                                style={{
+                                    flex: 1,
+                                    resizeMode: 'stretch',
+                                    borderWidth: 1,
+                                    borderColor: '#000'
+                                }}
+                                source={{ uri: image, }} />
+                        )
+            </View> */}
         </View>
     );
 }
 
-export default ListOfWords;
+export default MyWords;
 
 const styles = StyleSheet.create({
     container: {

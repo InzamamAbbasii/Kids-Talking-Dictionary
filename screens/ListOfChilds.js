@@ -1,31 +1,56 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, Button, TextInput, TouchableOpacity, ToastAndroid, ScrollView } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, ScrollView, FlatList } from 'react-native';
+import { openDatabase } from 'react-native-sqlite-storage';
+
 //SignUp Screen Code-------
 const ListOfChilds = ({ navigation }) => {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [accountType, setAccountType] = useState();//test
-
+    var db = openDatabase({ name: 'KidsTalkingDictionaryDB.db', createFromLocation: 1 });
+    const [data, setData] = useState([]);
+    const getAllChilds = () => {
+        setData([]);
+        db.transaction((tx) => {
+            tx.executeSql(
+                'Select * from Childs',
+                [],
+                (tx, results) => {
+                    if (results.rows.length > 0) {
+                        var temp = [];
+                        for (let index = 0; index < results.rows.length; index++) {
+                            temp.push(results.rows.item(index))
+                            setData(data => [...data, {
+                                Id: results.rows.item(index).Id,
+                                Name: results.rows.item(index).Name,
+                                Class: results.rows.item(index).Class,
+                            }])
+                        }
+                    } else {
+                        alert('No Child Found...')
+                    }
+                }
+            );
+        })
+    }
+    useEffect(() => {
+        getAllChilds();
+    }, []);
+    const renderItem = ({item}) => {
+        return (
+            <TouchableOpacity style={styles.cardView} onPress={() => navigation.navigate('AssignWords',{ChildId:item.Id,Name:item.Name})}>
+                <Text style={styles.card_title}> {item.Name} </Text>
+            </TouchableOpacity>
+        );
+    }
     return (
         <View style={styles.container}>
-            <ScrollView showsVerticalScrollIndicator={false}>
-                {/* <View style={styles.header}>
-                    <Text style={{ fontSize: 32, color: '#3EB489', fontWeight: 'bold' }}> Students </Text>
-                </View> */}
-                <TouchableOpacity style={styles.cardView} onPress={()=>navigation.navigate('SelectWord')}>
-                    <Text style={styles.card_title}> Asam </Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.cardView}>
-                    <Text style={styles.card_title}> Amna</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.cardView}>
-                    <Text style={styles.card_title}> Ali </Text>
-                </TouchableOpacity>
-            </ScrollView>
+
+            <View style={styles.header}>
+                <Text style={{ fontSize: 32, color: '#3EB489', fontWeight: 'bold' }}> List of Childs</Text>
+            </View>
+            <FlatList
+                data={data}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={renderItem}
+            />
         </View>
     );
 }
@@ -43,14 +68,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#3EB489',
         height: 50,
         width: '90%',
-        alignSelf:'center',
-        borderRadius:10,
-        padding:10,
-        marginVertical:5,
+        alignSelf: 'center',
+        borderRadius: 10,
+        padding: 10,
+        marginVertical: 5,
     },
     card_title: {
         color: "white",
-        fontSize:18,
-        fontWeight:'bold',
+        fontSize: 18,
+        fontWeight: 'bold',
     }
 })
