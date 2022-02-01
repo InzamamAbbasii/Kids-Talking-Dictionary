@@ -1,8 +1,18 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext,useLayoutEffect } from 'react';
 import { StyleSheet, View, Text, Button, TextInput, TouchableOpacity, ToastAndroid, StatusBar } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 //Login Screen Code
 const Dashboard = ({ navigation }) => {
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+            <Icon name='arrow-back' size={30} style={{ marginRight: 15 }}
+              onPress={() => {navigation.navigate('Home')}}
+              color="#fff"
+            />
+          ),
+    });
+  }, [navigation]);
   return (
     <View style={styles.container}>
         <TouchableOpacity
@@ -17,11 +27,18 @@ const Dashboard = ({ navigation }) => {
         >
           <Text style={{ fontSize: 25, fontWeight: 'bold', color: '#eee' }}> List of Childs </Text>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.btn} onPress={()=>navigation.navigate('AddWords')}
         >
           <Text style={{ fontSize: 25, fontWeight: 'bold', color: '#eee' }}> Add Word </Text>
+        </TouchableOpacity> */}
+        <TouchableOpacity
+          style={styles.btn}
+          onPress={()=>navigation.navigate('SoundRecorder')}
+        >
+          <Text style={{ fontSize: 25, fontWeight: 'bold', color: '#eee' }}> Add Word </Text>
         </TouchableOpacity>
+
         <TouchableOpacity
           style={styles.btn}
           onPress={()=>navigation.navigate('ListOfWords')}

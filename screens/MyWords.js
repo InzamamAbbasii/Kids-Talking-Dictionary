@@ -19,10 +19,13 @@ const MyWords = ({ navigation, route }) => {
                             setData(data => [...data, {
                                 Id: results.rows.item(index).Id,
                                 Word: results.rows.item(index).Word,
+                                WordAudio: results.rows.item(index).WordAudio,
                                 Meaning: results.rows.item(index).Meaning,
+                                MeaningAudio: results.rows.item(index).MeaningAudio,
                                 Base64Image: results.rows.item(index).Image,
                             }])
                         }
+                        console.log(temp);
                     } else {
                         alert('No Record Found...')
                     }
@@ -35,7 +38,14 @@ const MyWords = ({ navigation, route }) => {
     }, []);
     const renderItem = ({ item }) => {
         return (
-            <TouchableOpacity style={styles.cardView} onPress={()=>navigation.navigate('WordDetail',{Id:item.Id,Word:item.Word,Meaning:item.Meaning,Image:item.Base64Image})}>
+            <TouchableOpacity style={styles.cardView} onPress={() => navigation.navigate('WordDetail', {
+                Id: item.Id,
+                Word: item.Word,
+                WordAudio:item.WordAudio,
+                Meaning: item.Meaning,
+                MeaningAudio:item.MeaningAudio,
+                Image: item.Base64Image
+            })}>
                 <Text style={styles.card_title}>{item.Word} </Text>
             </TouchableOpacity>
         );

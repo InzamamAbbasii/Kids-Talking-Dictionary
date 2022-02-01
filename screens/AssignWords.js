@@ -121,7 +121,7 @@ const AssignWords = ({ navigation, route }) => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={{ fontSize: 32, color: '#3EB489', fontWeight: 'bold' }}>Select Words for "{route.params.Name}"</Text>
+                <Text style={{ fontSize: 32, color: '#3EB489', fontWeight: 'bold' }}> {route.params.Name}</Text>
             </View>
             <FlatList
                 data={data}
