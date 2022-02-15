@@ -271,12 +271,6 @@ const AddWords = ({ navigation }) => {
         const path = `${RNFS.DocumentDirectoryPath}/sound1.mp4`;
         RNFS.readFile(path, 'mp4').then((res) => console.log(res)).catch(err => alert(err))
 
-
-
-   
-
-
-
         // if (word.length == 0) {
         //     alert('Please Enter Word!')
         // } else if (meaning.length == 0) {

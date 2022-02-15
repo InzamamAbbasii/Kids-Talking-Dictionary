@@ -52,7 +52,7 @@ const SignUpScreen = ({ navigation }) => {
           <View style={styles.textInput}>
             <Icon name='person' size={30} color='#3EB489' />
             <TextInput
-              style={{ padding: 5, fontSize: 18, width: '85%' }}
+              style={{ padding: 5, fontSize: 18, width: '85%',color:'#000' }}
               placeholder="UserName"
               placeholderTextColor="#3228"
               onChangeText={(name) => setName(name)}
@@ -61,7 +61,7 @@ const SignUpScreen = ({ navigation }) => {
           <View style={styles.textInput}>
             <Icon name='email' size={30} color='#3EB489' />
             <TextInput
-              style={{ padding: 5, fontSize: 18, width: '85%' }}
+              style={{ padding: 5, fontSize: 18, width: '85%' ,color:'#000'}}
               placeholder="Email."
               placeholderTextColor="#3228"
               onChangeText={(email) => setEmail(email)}
@@ -70,7 +70,7 @@ const SignUpScreen = ({ navigation }) => {
           <View style={styles.textInput}>
             <Icon name='lock' size={30} color='#3EB489' />
             <TextInput
-              style={{ padding: 5, fontSize: 18, width: '85%' }}
+              style={{ padding: 5, fontSize: 18, width: '85%',color:'#000' }}
               placeholder="Password"
               placeholderTextColor="#3228"
               secureTextEntry={true}

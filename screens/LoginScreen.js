@@ -13,10 +13,11 @@ const LoginScreen = ({ navigation }) => {
   var Password = password;
 
   const login = () => {
+    console.log(name,password);
     db.transaction((tx) => {
       tx.executeSql(
-        'SELECT * FROM Users where Name=? and Password=?',
-        [name.toLocaleLowerCase(),password],
+        'SELECT * FROM Users where Name like ? and Password=?',
+        [name,password],
         (tx, results) => {
           if(results.rows.length>0){
             navigation.navigate("Dashboard")
@@ -43,7 +44,7 @@ const LoginScreen = ({ navigation }) => {
         <View style={styles.textInput}>
           <Icon name='person' size={30} color='#3EB489' />
           <TextInput
-            style={{ padding: 5, fontSize: 18, width: '85%' }}
+            style={{ padding: 5, fontSize: 18, width: '85%',color:'#000' }}
             placeholder="UserName"
             placeholderTextColor="#3228"
             onChangeText={(name) => setName(name)}
@@ -53,7 +54,7 @@ const LoginScreen = ({ navigation }) => {
         <View style={styles.textInput}>
           <Icon name='lock' size={30} color='#3EB489' />
           <TextInput
-            style={{ padding: 5, fontSize: 18, width: '85%' }}
+            style={{ padding: 5, fontSize: 18, width: '85%',color:'#000' }}
             placeholder="Password"
             placeholderTextColor="#3228"
             secureTextEntry={true}

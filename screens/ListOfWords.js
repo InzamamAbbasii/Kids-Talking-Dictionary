@@ -19,7 +19,11 @@ const ListOfWords = ({ navigation }) => {
                             setData(data => [...data, {
                                 Id: results.rows.item(index).Id,
                                 Word: results.rows.item(index).Word,
+                                WordAudio: results.rows.item(index).WordAudio,
+                                MeaningAudio: results.rows.item(index).MeaningAudio,
                                 Meaning: results.rows.item(index).Meaning,
+                                Base64Image: results.rows.item(index).Image,
+                                Class: results.rows.item(index).Class,
                             }])
                         }
                     } else {
@@ -32,20 +36,24 @@ const ListOfWords = ({ navigation }) => {
     useEffect(() => {
         getAllWords();
     }, []);
-    const renderItem = ({item}) => {
+    const renderItem = ({ item }) => {
         return (
-            <TouchableOpacity style={styles.cardView} >
-                <Text style={styles.card_title}>{item.Word} </Text>
-                <Text style={[styles.card_title,{fontWeight:'normal'}]}>{item.Meaning} </Text>
+            <TouchableOpacity style={styles.cardView} onPress={() => navigation.navigate('WordDetail', {
+                Id: item.Id,
+                Word: item.Word,
+                WordAudio: item.WordAudio,
+                Meaning: item.Meaning,
+                MeaningAudio: item.MeaningAudio,
+                Image: item.Base64Image
+            })}>
+                <Text style={styles.card_title}>Word : {item.Word} </Text>
+                <Text style={[styles.card_title, { fontWeight: 'normal' }]}>Meaning : {item.Meaning} </Text>
+                <Text style={[styles.card_title, { fontWeight: 'normal' }]}>Class : {item.Class} </Text>
             </TouchableOpacity>
         );
     }
     return (
         <View style={styles.container}>
-
-            <View style={styles.header}>
-                <Text style={{ fontSize: 32, color: '#3EB489', fontWeight: 'bold' }}> List of Words</Text>
-            </View>
             <FlatList
                 data={data}
                 keyExtractor={(item, index) => index.toString()}
@@ -59,18 +67,15 @@ export default ListOfWords;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1, paddingTop: 30, backgroundColor: '#fff',
-    },
-    header: {
-        paddingBottom: 25, alignItems: 'center'
+        flex: 1, paddingTop: 10, backgroundColor: '#fff',
     },
     cardView: {
         backgroundColor: '#3EB489',
-        width: '90%',
+        width: '94%',
         alignSelf: 'center',
         borderRadius: 10,
         padding: 10,
-        marginVertical: 5,
+        marginVertical: 2.5,
     },
     card_title: {
         color: "white",

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ScrollView, FlatList } from 'react-native';
+import { RadioButtonItem } from 'react-native-paper/lib/typescript/components/RadioButton/RadioButtonItem';
 import { openDatabase } from 'react-native-sqlite-storage';
 
 //SignUp Screen Code-------
-const ListOfChilds = ({ navigation }) => {
+const ListOfChilds = ({ navigation,route }) => {
+    console.log(route.params);
     var db = openDatabase({ name: 'KidsTalkingDictionaryDB.db', createFromLocation: 1 });
     const [data, setData] = useState([]);
     const getAllChilds = () => {
@@ -35,17 +37,19 @@ const ListOfChilds = ({ navigation }) => {
     }, []);
     const renderItem = ({item}) => {
         return (
-            <TouchableOpacity style={styles.cardView} onPress={() => navigation.navigate('AssignWords',{ChildId:item.Id,Name:item.Name})}>
-                <Text style={styles.card_title}> {item.Name} </Text>
+            <TouchableOpacity style={styles.cardView} disabled={route.params.ShowWords==false?true:false} onPress={() => navigation.navigate('AssignWords',{
+                ChildId:item.Id,
+                Name:item.Name,
+                Class:item.Class,
+                })}>
+                <Text style={styles.card_title}>Name :  {item.Name} </Text>
+                <Text style={styles.card_title}>Class :  {item.Class} </Text>
             </TouchableOpacity>
         );
     }
     return (
         <View style={styles.container}>
 
-            <View style={styles.header}>
-                <Text style={{ fontSize: 32, color: '#3EB489', fontWeight: 'bold' }}> List of Childs</Text>
-            </View>
             <FlatList
                 data={data}
                 keyExtractor={(item, index) => index.toString()}
@@ -59,22 +63,17 @@ export default ListOfChilds;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1, paddingTop: 30, backgroundColor: '#fff',
-    },
-    header: {
-        paddingBottom: 25, alignItems: 'center'
+        flex: 1, backgroundColor: '#8777',
     },
     cardView: {
-        backgroundColor: '#3EB489',
-        height: 50,
-        width: '90%',
+        width: '100%',
         alignSelf: 'center',
-        borderRadius: 10,
         padding: 10,
-        marginVertical: 5,
+        borderBottomWidth:1,
+        borderBottomColor:'#000'
     },
     card_title: {
-        color: "white",
+        color: "#000",
         fontSize: 18,
         fontWeight: 'bold',
     }

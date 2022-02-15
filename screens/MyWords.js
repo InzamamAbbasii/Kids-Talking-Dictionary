@@ -25,7 +25,6 @@ const MyWords = ({ navigation, route }) => {
                                 Base64Image: results.rows.item(index).Image,
                             }])
                         }
-                        console.log(temp);
                     } else {
                         alert('No Record Found...')
                     }
@@ -41,9 +40,9 @@ const MyWords = ({ navigation, route }) => {
             <TouchableOpacity style={styles.cardView} onPress={() => navigation.navigate('WordDetail', {
                 Id: item.Id,
                 Word: item.Word,
-                WordAudio:item.WordAudio,
+                WordAudio: item.WordAudio,
                 Meaning: item.Meaning,
-                MeaningAudio:item.MeaningAudio,
+                MeaningAudio: item.MeaningAudio,
                 Image: item.Base64Image
             })}>
                 <Text style={styles.card_title}>{item.Word} </Text>
@@ -52,26 +51,11 @@ const MyWords = ({ navigation, route }) => {
     }
     return (
         <View style={styles.container}>
-
-            <View style={styles.header}>
-                <Text style={{ fontSize: 32, color: '#3EB489', fontWeight: 'bold' }}> List of Words</Text>
-            </View>
             <FlatList
                 data={data}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={renderItem}
             />
-            {/* <View style={{ height: 200, padding: 10, backgroundColor: 'pink' }}>
-                            <Image
-                                style={{
-                                    flex: 1,
-                                    resizeMode: 'stretch',
-                                    borderWidth: 1,
-                                    borderColor: '#000'
-                                }}
-                                source={{ uri: image, }} />
-                        )
-            </View> */}
         </View>
     );
 }
@@ -82,15 +66,12 @@ const styles = StyleSheet.create({
     container: {
         flex: 1, paddingTop: 30, backgroundColor: '#fff',
     },
-    header: {
-        paddingBottom: 25, alignItems: 'center'
-    },
     cardView: {
         backgroundColor: '#3EB489',
         width: '90%',
         alignSelf: 'center',
         borderRadius: 10,
-        padding: 10,
+        padding: 20,
         marginVertical: 5,
     },
     card_title: {

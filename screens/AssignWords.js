@@ -16,7 +16,7 @@ const AssignWords = ({ navigation, route }) => {
         setData([]);
         db.transaction((tx) => {
             tx.executeSql(
-                `SELECT * FROM Words`,
+                `SELECT * FROM Words Where Class=${route.params.Class}`,
                 [],
                 (tx, results) => {
                     if (results.rows.length > 0) {
@@ -28,7 +28,6 @@ const AssignWords = ({ navigation, route }) => {
                                     [route.params.ChildId, results.rows.item(index).Id],
                                     (tx, results1) => {
                                         if (results1.rows.length > 0) {
-                                            console.log(results1.rows.length);
                                             setData(data => [...data, {
                                                 Id: results.rows.item(index).Id,
                                                 Word: results.rows.item(index).Word,
@@ -48,7 +47,7 @@ const AssignWords = ({ navigation, route }) => {
                             })
                         }
                     } else {
-                        alert('No Child Found...')
+                        alert(`No Word Found of class ${route.params.Class}`)
                     }
                 }
             );
@@ -73,6 +72,7 @@ const AssignWords = ({ navigation, route }) => {
         setData(newData);
     }
     const saveData = async () => {
+        let count = 0;
         data.forEach(async (element, index) => {
             await db.transaction((tx) => {
                 tx.executeSql(
@@ -85,7 +85,9 @@ const AssignWords = ({ navigation, route }) => {
                                 [element.Id, route.params.ChildId, element.selected, element.Id, route.params.ChildId],
                                 (tx, results) => {
                                     if (results.rowsAffected > 0) {
-                                        alert('Record Updated Successfully!')
+                                        count++;
+                                        if (data.length == count)
+                                            alert('Record Updated Successfully!')
                                     } else {
                                         alert('Do nothing..')
                                     }
@@ -97,7 +99,9 @@ const AssignWords = ({ navigation, route }) => {
                                 [element.Id, route.params.ChildId, element.selected],
                                 (tx, results) => {
                                     if (results.rowsAffected > 0) {
-                                        alert('Data Saved Successfully!')
+                                        count++;
+                                        if (data.length == count)
+                                            alert('Data Saved Successfully!')
                                     } else {
                                         alert('Do nothing..')
                                     }

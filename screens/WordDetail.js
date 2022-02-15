@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image, FlatList } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Image, FlatList,ScrollView } from 'react-native';
 import { openDatabase } from 'react-native-sqlite-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ImageCropPicker from 'react-native-image-crop-picker';
@@ -73,84 +73,84 @@ const WordDetail = ({ navigation, route }) => {
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <Text style={{ fontSize: 32, color: '#3EB489', fontWeight: 'bold' }}> {route.params.Word}</Text>
-                <View style={[styles.cardView, { flexDirection: 'column', alignItems: 'flex-start', backgroundColor: '#1bbb' }]} >
-                    <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Audio</Text>
-                    <View style={{ flexDirection: 'row', width: '100%', marginTop: 10, justifyContent: 'space-evenly', marginLeft: 10 }}>
-                        {
-                            isPlay == true ? (
-                                <TouchableOpacity
-                                    style={{ backgroundColor: '#fff', borderRadius: 30, marginRight: 10 }}
-                                    onPress={() => { onPausePlay('word') }}>
-                                    <MaterialCommunityIcons name='pause' color={'red'} size={50} />
-                                </TouchableOpacity>
-                            ) : (
-                                <TouchableOpacity
-                                    style={{ backgroundColor: '#fff', borderRadius: 30, marginRight: 10 }}
-                                    onPress={() => { onStartPlay('word') }}
-                                >
-                                    <MaterialCommunityIcons name='play' color={'red'} size={50} />
-                                </TouchableOpacity>
-                            )
-                        }
-                        {
-                            audioData1.length == 0 ? (
-                                <Text style={{ fontSize: 25, fontWeight: 'bold', flex: 1, textAlign: 'center', alignSelf: 'center' }}>00:00:00 </Text>
-                            ) : (
-                                <Text style={{ fontSize: 25, fontWeight: 'bold', flex: 1, textAlign: 'center', alignSelf: 'center' }}>{audioData1.playTime} </Text>
-                            )
-                        }
+        <ScrollView>
+            <View style={styles.container}>
+                <View style={styles.header}>
+                    <Text style={{ fontSize: 32, color: '#3EB489', fontWeight: 'bold', marginLeft: 10 }}>Word : {route.params.Word}</Text>
+                    <View style={[styles.cardView, { flexDirection: 'column', alignItems: 'flex-start', backgroundColor: '#1bbb' }]} >
+                        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Audio</Text>
+                        <View style={{ flexDirection: 'row', width: '100%', marginTop: 10, justifyContent: 'space-evenly', marginLeft: 10 }}>
+                            {
+                                isPlay == true ? (
+                                    <TouchableOpacity
+                                        style={{ backgroundColor: '#fff', borderRadius: 30, marginRight: 10 }}
+                                        onPress={() => { onPausePlay('word') }}>
+                                        <MaterialCommunityIcons name='pause' color={'red'} size={50} />
+                                    </TouchableOpacity>
+                                ) : (
+                                    <TouchableOpacity
+                                        style={{ backgroundColor: '#fff', borderRadius: 30, marginRight: 10 }}
+                                        onPress={() => { onStartPlay('word') }}
+                                    >
+                                        <MaterialCommunityIcons name='play' color={'red'} size={50} />
+                                    </TouchableOpacity>
+                                )
+                            }
+                            {
+                                audioData1.length == 0 ? (
+                                    <Text style={{ fontSize: 25, fontWeight: 'bold', flex: 1, textAlign: 'center', alignSelf: 'center' }}>00:00:00 </Text>
+                                ) : (
+                                    <Text style={{ fontSize: 25, fontWeight: 'bold', flex: 1, textAlign: 'center', alignSelf: 'center' }}>{audioData1.playTime} </Text>
+                                )
+                            }
+                        </View>
+
                     </View>
 
-                </View>
-
-                {/* -------------------------------------------------------------------------------------------------------- */}
+                    {/* -------------------------------------------------------------------------------------------------------- */}
 
 
-                <Text style={{ fontSize: 32, color: '#3EB489', fontWeight: 'bold' }}> {route.params.Meaning}</Text>
-                <View style={[styles.cardView, { flexDirection: 'column', alignItems: 'flex-start', backgroundColor: '#1bbb' }]} >
-                    <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Audio</Text>
-                    <View style={{ flexDirection: 'row', width: '100%', marginTop: 10, justifyContent: 'space-evenly', marginLeft: 10 }}>
-                        {
-                            isMeaningPlay == true ? (
-                                <TouchableOpacity
-                                    style={{ backgroundColor: '#fff', borderRadius: 30, marginRight: 10 }}
-                                    onPress={() => { onPausePlay('meaning') }}>
-                                    <MaterialCommunityIcons name='pause' color={'red'} size={50} />
-                                </TouchableOpacity>
-                            ) : (
-                                <TouchableOpacity
-                                    style={{ backgroundColor: '#fff', borderRadius: 30, marginRight: 10 }}
-                                    onPress={() => { onStartPlay('meaning') }}
-                                >
-                                    <MaterialCommunityIcons name='play' color={'red'} size={50} />
-                                </TouchableOpacity>
-                            )
-                        }
-                        {
-                            playMeaningAudioData.length == 0 ? (
-                                <Text style={{ fontSize: 25, fontWeight: 'bold', flex: 1, textAlign: 'center', alignSelf: 'center' }}>00:00:00 </Text>
-                            ) : (
-                                <Text style={{ fontSize: 25, fontWeight: 'bold', flex: 1, textAlign: 'center', alignSelf: 'center' }}>{playMeaningAudioData.playTime} </Text>
-                            )
-                        }
+                    <Text style={{ fontSize: 32, color: '#3EB489', fontWeight: 'bold', marginLeft: 10 }}>Meaning :  {route.params.Meaning}</Text>
+                    <View style={[styles.cardView, { flexDirection: 'column', alignItems: 'flex-start', backgroundColor: '#1bbb' }]} >
+                        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Audio</Text>
+                        <View style={{ flexDirection: 'row', width: '100%', marginTop: 10, justifyContent: 'space-evenly', marginLeft: 10 }}>
+                            {
+                                isMeaningPlay == true ? (
+                                    <TouchableOpacity
+                                        style={{ backgroundColor: '#fff', borderRadius: 30, marginRight: 10 }}
+                                        onPress={() => { onPausePlay('meaning') }}>
+                                        <MaterialCommunityIcons name='pause' color={'red'} size={50} />
+                                    </TouchableOpacity>
+                                ) : (
+                                    <TouchableOpacity
+                                        style={{ backgroundColor: '#fff', borderRadius: 30, marginRight: 10 }}
+                                        onPress={() => { onStartPlay('meaning') }}
+                                    >
+                                        <MaterialCommunityIcons name='play' color={'red'} size={50} />
+                                    </TouchableOpacity>
+                                )
+                            }
+                            {
+                                playMeaningAudioData.length == 0 ? (
+                                    <Text style={{ fontSize: 25, fontWeight: 'bold', flex: 1, textAlign: 'center', alignSelf: 'center' }}>00:00:00 </Text>
+                                ) : (
+                                    <Text style={{ fontSize: 25, fontWeight: 'bold', flex: 1, textAlign: 'center', alignSelf: 'center' }}>{playMeaningAudioData.playTime} </Text>
+                                )
+                            }
+                        </View>
+
                     </View>
-
+                </View>
+                <View style={{ minHeight: 250, width: '92%', alignSelf: 'center',borderWidth: 1,borderColor: '#000',marginBottom:10 }}>
+                    <Image
+                        style={{
+                            flex: 1,
+                            resizeMode: 'contain',
+                        }}
+                        source={{ uri: `data:image/jpeg;base64,${route.params.Image}` }} />
                 </View>
             </View>
-            <View style={{ height: 200,width:'92%',alignSelf:'center' }}>
-                <Image
-                    style={{
-                        flex: 1,
-                        resizeMode: 'stretch',
-                        borderWidth: 1,
-                        borderColor: '#000'
-                    }}
-                    source={{ uri: `data:image/jpeg;base64,${route.params.Image}` }} />
-            </View>
-        </View>
+        </ScrollView>
     );
 }
 
@@ -158,14 +158,14 @@ export default WordDetail;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1, paddingTop: 30, backgroundColor: '#fff',
+        flex: 1,paddingVertical:10, backgroundColor: '#fff',
     },
     header: {
         paddingBottom: 25,
     },
     cardView: {
-        backgroundColor: '#3EB489',
-        width: '90%',
+        // backgroundColor: '#3EB489',
+        width: '94%',
         alignSelf: 'center',
         borderRadius: 10,
         padding: 10,

@@ -9,9 +9,11 @@ import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import moment from 'moment';
 import RNFetchBlob from 'react-native-fetch-blob';
 import RNFS from 'react-native-fs';
+import { Picker } from '@react-native-picker/picker';
+
 const audioRecorderPlayer = new AudioRecorderPlayer();
 const audioRecorderPlayerForMeaning = new AudioRecorderPlayer();
-export default SoundRecorder = ({ navigation }) => {
+const SoundRecorder = ({ navigation }) => {
     var db = openDatabase({ name: 'KidsTalkingDictionaryDB.db', createFromLocation: 1 });
     const [word, setWord] = useState('');
     const [meaning, setMeaning] = useState('');
@@ -32,13 +34,16 @@ export default SoundRecorder = ({ navigation }) => {
     const [wordAudioURL, setWordAudioURL] = useState(null);
     const [meaningAudioURL, setMeaningAudioURL] = useState(null);
     const [permission, setPermission] = useState(false);
-    const getPermisssion=async()=>{
+    const [selectedClass, setSelectedClass] = useState('1');
+
+    const getPermisssion = async () => {
         if (Platform.OS === 'android') {
             try {
                 const grants = await PermissionsAndroid.requestMultiple([
                     PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
                     PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
                     PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+
                 ]);
                 // console.log('write external stroage', grants);
                 if (
@@ -49,8 +54,8 @@ export default SoundRecorder = ({ navigation }) => {
                     grants['android.permission.RECORD_AUDIO'] ===
                     PermissionsAndroid.RESULTS.GRANTED
                 ) {
-                    console.log('Permissions granted');  
-                    setPermission(true) ;                 
+                    console.log('Permissions granted');
+                    setPermission(true);
                 } else {
                     console.log('All required permissions not granted');
                     alert('All required permissions are not granted.Please enable it manually!')
@@ -62,122 +67,129 @@ export default SoundRecorder = ({ navigation }) => {
             }
         }
     }
-   useEffect(() => {
-     getPermisssion();
-   }, []);
-   
+    useEffect(() => {
+        RNFS.writeFile(RNFetchBlob.fs.dirs.DCIMDir + '/KidsTalkingDictionary/1.txt', 'Lorem ipsum dolor sit amet', 'utf8')
+            .then((success) => {
+                console.log('FILE WRITTEN!');
+            })
+            .catch((err) => {
+                console.log(err.message);
+            });
+        getPermisssion();
+    }, []);
+
     const onStartRecord = async (params) => {
         if (permission) {
             try {
-                    console.log('start word recording....');
-                    const dirs = RNFetchBlob.fs.dirs;
-                    if (params == 'word') {
-                        if (word.length == 0) {
-                            alert('Please Enter Word')
-                        } else {
-                            const path = Platform.select({
-                                ios: 'word.m4a',
-                                android: `${dirs.MusicDir}/${word}.mp3`,
-                            });
-                            console.log('........................................');
+                console.log('start word recording....');
+                const dirs = RNFetchBlob.fs.dirs;
+                if (params == 'word') {
+                    if (word.length == 0) {
+                        alert('Please Enter Word')
+                    } else {
+                        const path = Platform.select({
+                            ios: 'word.m4a',
+                            android: `${dirs.MusicDir}/${word}.mp3`,
+                        });
+                        console.log('........................................');
 
-                            RNFetchBlob.fs.ls(RNFetchBlob.fs.dirs.MusicDir)
-                                // files will an array contains filenames
-                                .then((files) => {
-                                    console.log('before....',files)
-                                })
+                        // RNFetchBlob.fs.ls(RNFetchBlob.fs.dirs.MusicDir)
+                        //     // files will an array contains filenames
+                        //     .then((files) => {
+                        //         console.log('before....',files)
+                        //     })
 
-                            // console.log(RNFetchBlob.fs.isDir(folder));
-                            // RNFetchBlob.fs.exists(path)
-                            //     .then(async (exists) => {
-                            //         console.log(exists)
-                            //         if (exists) {
-                            //             await RNFetchBlob.fs.stat(path)
-                            //                 .then(async (res) => {
-                            //                     console.log('File deleted')
-                            //                     RNFetchBlob.fs.ls(RNFetchBlob.fs.dirs.MusicDir)
-                            //                     // files will an array contains filenames
-                            //                     .then((files) => {
-                            //                         console.log('after....',files)
-                            //                     })
-                            //                 })
-                            //                 .catch(err => console.log('errrr...' + err))
+                        // console.log(RNFetchBlob.fs.isDir(folder));
+                        // RNFetchBlob.fs.exists(path)
+                        //     .then(async (exists) => {
+                        //         console.log(exists)
+                        //         if (exists) {
+                        //             await RNFetchBlob.fs.stat(path)
+                        //                 .then(async (res) => {
+                        //                     console.log('File deleted')
+                        //                     RNFetchBlob.fs.ls(RNFetchBlob.fs.dirs.MusicDir)
+                        //                     // files will an array contains filenames
+                        //                     .then((files) => {
+                        //                         console.log('after....',files)
+                        //                     })
+                        //                 })
+                        //                 .catch(err => console.log('errrr...' + err))
 
-                            //         } else {
-                            //             console.log('not exists');
-                            //         }
-                            //         const uri = await audioRecorderPlayer.startRecorder(path);
-                            //         setMeaningRecordAudio({ ...meaningRecordAudio })
-                            //         audioRecorderPlayer.addRecordBackListener((e) => {
-                            //             let duration = audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)).split(':');
-                            //             setMeaningRecordAudio({ ...meaningRecordAudio })
-                            //             setAudioData({
-                            //                 recordSecs: e.currentPosition,
-                            //                 // recordTime: audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)),
-                            //                 recordTime: '00:' + duration[0] + ':' + duration[1],
-                            //             });
-                            //             setWordAudioURL(path);
-                            //             //converting audio to base64
-                            //             // RNFS.readFile(path, 'base64')
-                            //             //     .then(res => { setWordBase64Audio(res) })
-                            //             //     .catch(err => console.log(`err..${err}`))
-                            //             return;
-                            //         });
-                            //         return;
-                            //     })
-                            //     .catch(err => alert(err))
-                            
-                            const uri = await audioRecorderPlayer.startRecorder(path);
+                        //         } else {
+                        //             console.log('not exists');
+                        //         }
+                        //         const uri = await audioRecorderPlayer.startRecorder(path);
+                        //         setMeaningRecordAudio({ ...meaningRecordAudio })
+                        //         audioRecorderPlayer.addRecordBackListener((e) => {
+                        //             let duration = audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)).split(':');
+                        //             setMeaningRecordAudio({ ...meaningRecordAudio })
+                        //             setAudioData({
+                        //                 recordSecs: e.currentPosition,
+                        //                 // recordTime: audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)),
+                        //                 recordTime: '00:' + duration[0] + ':' + duration[1],
+                        //             });
+                        //             setWordAudioURL(path);
+                        //             //converting audio to base64
+                        //             // RNFS.readFile(path, 'base64')
+                        //             //     .then(res => { setWordBase64Audio(res) })
+                        //             //     .catch(err => console.log(`err..${err}`))
+                        //             return;
+                        //         });
+                        //         return;
+                        //     })
+                        //     .catch(err => alert(err))
+
+                        const uri = await audioRecorderPlayer.startRecorder(path);
+                        setMeaningRecordAudio({ ...meaningRecordAudio })
+                        audioRecorderPlayer.addRecordBackListener((e) => {
+                            let duration = audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)).split(':');
                             setMeaningRecordAudio({ ...meaningRecordAudio })
-                            audioRecorderPlayer.addRecordBackListener((e) => {
-                                let duration = audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)).split(':');
-                                setMeaningRecordAudio({ ...meaningRecordAudio })
-                                setAudioData({
-                                    recordSecs: e.currentPosition,
-                                    // recordTime: audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)),
-                                    recordTime: '00:' + duration[0] + ':' + duration[1],
-                                });
-                                setWordAudioURL(path);
-                                //converting audio to base64
-                                RNFS.readFile(path, 'base64')
-                                    .then(res => { setWordBase64Audio(res) })
-                                    .catch(err => alert(err))
-                                return;
+                            setAudioData({
+                                recordSecs: e.currentPosition,
+                                // recordTime: audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)),
+                                recordTime: '00:' + duration[0] + ':' + duration[1],
                             });
-                        }
-                    } else if (params == 'meaning') {
-                        if (meaning.length == 0) {
-                            alert(`Please Enter Meaning of "${word}"`)
-                        } else {
-                            const path = Platform.select({
-                                ios: 'meaning.m4a',
-                                android: `${dirs.MusicDir}/${word} Meaning.mp3`,
-                            });
-                            const uri = await audioRecorderPlayer.startRecorder(path);
-                            setAudioData({ ...audioData });
-                            audioRecorderPlayer.addRecordBackListener((e) => {
-                                setAudioData({ ...audioData });
-                                let duration = audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)).split(':');
-                                setMeaningRecordAudio({
-                                    recordSecs: e.currentPosition,
-                                    // recordTime: audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)),
-                                    recordTime: '00:' + duration[0] + ':' + duration[1],
-                                });
-                                setMeaningAudioURL(path)
-                                //converting audio to base64
-                                RNFS.readFile(path, 'base64')
-                                    .then(res => { setMeaningBase64Audio(res) })
-                                    .catch(err => alert(err))
-                                return;
-                            });
-                        }
+                            setWordAudioURL(path);
+                            //converting audio to base64
+                            RNFS.readFile(path, 'base64')
+                                .then(res => { setWordBase64Audio(res) })
+                                .catch(err => alert(err))
+                            return;
+                        });
                     }
+                } else if (params == 'meaning') {
+                    if (meaning.length == 0) {
+                        alert(`Please Enter Meaning of "${word}"`)
+                    } else {
+                        const path = Platform.select({
+                            ios: 'meaning.m4a',
+                            android: `${dirs.MusicDir}/${word} Meaning.mp3`,
+                        });
+                        const uri = await audioRecorderPlayer.startRecorder(path);
+                        setAudioData({ ...audioData });
+                        audioRecorderPlayer.addRecordBackListener((e) => {
+                            setAudioData({ ...audioData });
+                            let duration = audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)).split(':');
+                            setMeaningRecordAudio({
+                                recordSecs: e.currentPosition,
+                                // recordTime: audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)),
+                                recordTime: '00:' + duration[0] + ':' + duration[1],
+                            });
+                            setMeaningAudioURL(path)
+                            //converting audio to base64
+                            RNFS.readFile(path, 'base64')
+                                .then(res => { setMeaningBase64Audio(res) })
+                                .catch(err => alert(err))
+                            return;
+                        });
+                    }
+                }
 
             } catch (err) {
                 console.warn('err in word ', err);
                 return;
             }
-        }else{
+        } else {
             getPermisssion();
         }
     };
@@ -294,11 +306,22 @@ export default SoundRecorder = ({ navigation }) => {
         } else {
             console.log('word', wordAudioURL);
             console.log('meaning', meaningAudioURL);
+            // let appFolderPath = RNFetchBlob.fs.dirs.DCIMDir+ '/KidsTalkingDictionary/Recording/'+word+'.mp3';
+            // let appFolderPath1 = RNFetchBlob.fs.dirs.DCIMDir+ '/KidsTalkingDictionary/Recording/'+word+' Meaning.mp3';
+            // RNFetchBlob.fs.exists(wordAudioURL)
+            // .then((esists)=>console.log(esists));
+
+            // RNFetchBlob.fs.mv(wordAudioURL, appFolderPath)
+            //     .then(() => { console.log('word audio successfully moved..',appFolderPath);})
+            //     .catch((err) => { console.log(err)})
+            // RNFetchBlob.fs.mv(meaningAudioURL, appFolderPath1)
+            //     .then(() => { console.log('meaning audio successfully moved..',appFolderPath1);})
+            //     .catch((err) => { console.log(err)})
             // storing URL of recording in database
             db.transaction((tx) => {
                 tx.executeSql(
-                    'Insert into Words(Word,WordAudio,Meaning,MeaningAudio,Image) Values (?,?,?,?,?)',
-                    [word, wordAudioURL, meaning, meaningAudioURL, base64Image],
+                    'Insert into Words(Word,WordAudio,Meaning,MeaningAudio,Image,Class) Values (?,?,?,?,?,?)',
+                    [word, wordAudioURL, meaning, meaningAudioURL, base64Image, selectedClass],
                     (tx, results) => {
                         if (results.rowsAffected > 0) {
                             alert('Word Added Successfully!')
@@ -333,14 +356,14 @@ export default SoundRecorder = ({ navigation }) => {
                 <View style={styles.cardView}>
                     <Text style={{ flex: 1, fontSize: 24, fontWeight: 'bold' }}>Word</Text>
                     <TextInput
-                        style={{ fontSize: 18, flex: 2, backgroundColor: '#fff' }}
+                        style={{ fontSize: 18, flex: 2, backgroundColor: '#fff', color: '#000' }}
                         placeholder="Enter Word"
                         placeholderTextColor="#3228"
                         onChangeText={(txt) => setWord(txt)}
                     />
                 </View>
 
-                <View style={[styles.cardView, { flexDirection: 'column', alignItems: 'flex-start', backgroundColor: '#ccc' }]} >
+                <View style={[styles.cardView, { flexDirection: 'column', alignItems: 'flex-start', }]} >
                     <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Start Recording</Text>
                     <View style={{ flexDirection: 'row', marginLeft: 20, marginVertical: 10 }}>
                         <TouchableOpacity
@@ -358,10 +381,32 @@ export default SoundRecorder = ({ navigation }) => {
                             )
                         }
                     </View>
+                    {/* <View style={{ flexDirection: 'row', marginLeft: 20, marginVertical: 10, }}>
+                        <TouchableOpacity
+                            style={{ backgroundColor: 'green', borderRadius: 10, justifyContent: 'center' }}
+                            onPress={() => { onStartRecord('word') }}
+                        >
+                            <Text style={{color:'#fff',fontSize: 24, fontWeight: '600', padding: 7 }}>Start</Text>
+                        </TouchableOpacity>
+                        {
+                            audioData.length == 0 ? (
+                                <Text style={{ fontSize: 25, fontWeight: 'bold', flex: 1, textAlign: 'center', alignSelf: 'center' }}>00:00:00 </Text>
+                            ) : (
+                                <Text style={{ fontSize: 25, fontWeight: 'bold', flex: 1, textAlign: 'center', alignSelf: 'center' }}>{audioData.recordTime} </Text>
+                            )
+                        }
+                        <TouchableOpacity
+                            style={{ backgroundColor: 'green', borderRadius: 10, justifyContent: 'center', }}
+                            onPress={() => { onStopRecord() }}
+                        >
+                            <Text style={{ color:'#fff',fontSize: 24, fontWeight: '600', padding: 7 }}>Stop</Text>
+                        </TouchableOpacity>
+
+                    </View> */}
                 </View>
 
 
-                <View style={[styles.cardView, { flexDirection: 'column', alignItems: 'flex-start', backgroundColor: '#1bbb' }]} >
+                <View style={[styles.cardView, { flexDirection: 'column', alignItems: 'flex-start', }]} >
                     <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Audio</Text>
                     <View style={{ flexDirection: 'row', width: '100%', marginTop: 10, justifyContent: 'space-evenly', marginLeft: 10 }}>
                         {
@@ -392,17 +437,17 @@ export default SoundRecorder = ({ navigation }) => {
                 </View>
 
                 {/* ------------------------------------------------------------------------------------------------------------------- */}
-                <View style={styles.cardView}>
+                <View style={[styles.cardView, { backgroundColor: '#1bbb' }]}>
                     <Text style={{ flex: 1, fontSize: 24, fontWeight: 'bold' }}>Meaning</Text>
                     <TextInput
-                        style={{ fontSize: 18, flex: 2, backgroundColor: '#fff' }}
+                        style={{ fontSize: 18, flex: 2, backgroundColor: '#fff', color: '#000' }}
                         placeholder="Enter Meaning"
                         placeholderTextColor="#3228"
                         onChangeText={(txt) => setMeaning(txt)}
                     />
                 </View>
 
-                <View style={[styles.cardView, { flexDirection: 'column', alignItems: 'flex-start', backgroundColor: '#ccc' }]} >
+                <View style={[styles.cardView, { flexDirection: 'column', alignItems: 'flex-start', backgroundColor: '#1bbb' }]} >
                     <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Start Recording</Text>
                     <View style={{ flexDirection: 'row', marginLeft: 20, marginVertical: 10 }}>
                         <TouchableOpacity
@@ -420,6 +465,28 @@ export default SoundRecorder = ({ navigation }) => {
                             )
                         }
                     </View>
+                    {/* <View style={{ flexDirection: 'row', marginLeft: 20, marginVertical: 10, }}>
+                        <TouchableOpacity
+                            style={{ backgroundColor: 'green', borderRadius: 10, justifyContent: 'center' }}
+                            onPress={() => { onStartRecord('meaning')}}
+                        >
+                            <Text style={{color:'#fff',fontSize: 24, fontWeight: '600', padding: 7 }}>Start</Text>
+                        </TouchableOpacity>
+                        {
+                            meaningRecordAudio.length == 0 ? (
+                                <Text style={{ fontSize: 25, fontWeight: 'bold', flex: 1, textAlign: 'center', alignSelf: 'center' }}>00:00:00</Text>
+                            ) : (
+                                <Text style={{ fontSize: 25, fontWeight: 'bold', flex: 1, textAlign: 'center', alignSelf: 'center' }}>{meaningRecordAudio.recordTime} </Text>
+                            )
+                        }
+                        <TouchableOpacity
+                            style={{ backgroundColor: 'green', borderRadius: 10, justifyContent: 'center', }}
+                            onPress={() => {onStopRecord() }}
+                        >
+                            <Text style={{ color:'#fff',fontSize: 24, fontWeight: '600', padding: 7 }}>Stop</Text>
+                        </TouchableOpacity>
+
+                    </View> */}
                 </View>
 
                 <View style={[styles.cardView, { flexDirection: 'column', alignItems: 'flex-start', backgroundColor: '#1bbb' }]} >
@@ -452,18 +519,38 @@ export default SoundRecorder = ({ navigation }) => {
 
                 </View>
 
-                <View style={{ height: 200, padding: 10, backgroundColor: '#eb4034' }}>
-                    <TouchableOpacity style={{ backgroundColor: '#fff', height: '100%', width: '100%', justifyContent: 'center', borderWidth: 1.5,
-                                        borderColor: '#000' }}
+
+                <View style={[styles.cardView, { flexDirection: 'row', height: 70, backgroundColor: '#2c9' }]} >
+                    <Text style={{ flex: 1, fontSize: 20, fontWeight: 'bold', textAlign: 'left', color: '#000' }}> Select Class</Text>
+                    <Picker style={{ flex: 1, color: '#000', backgroundColor: '#fff', }}
+                        selectedValue={selectedClass}
+                        onValueChange={(itemValue, itemIndex) =>
+                            setSelectedClass(itemValue)
+                        }
+                        mode='dropdown'
+                    >
+                        <Picker.Item label="1" value="1" />
+                        <Picker.Item label="2" value="2" />
+                        <Picker.Item label="3" value="3" />
+                        <Picker.Item label="4" value="4" />
+                        <Picker.Item label="5" value="5" />
+                    </Picker>
+                </View>
+
+
+
+                <View style={{ height: 250, padding: 10, backgroundColor: '#2c9' }}>
+                    <TouchableOpacity style={{
+                        backgroundColor: '#fff', height: '100%', width: '100%', justifyContent: 'center', borderWidth: 1.5,
+                        borderColor: '#000'
+                    }}
                         onPress={() => choosePhotoFromLibrary()}>
                         {
                             image == null ? (<Text style={{ fontSize: 25, fontWeight: 'bold', alignSelf: 'center' }}>Choose image</Text>) : (
                                 <Image
                                     style={{
                                         flex: 1,
-                                        resizeMode: 'stretch',
-                                        borderWidth: 1,
-                                        borderColor: '#000'
+                                        resizeMode: 'contain',
                                     }}
                                     source={{ uri: image, }} />
                             )
@@ -479,7 +566,7 @@ export default SoundRecorder = ({ navigation }) => {
         </View>
     );
 }
-
+export default SoundRecorder;
 
 const styles = StyleSheet.create({
     container: {
@@ -505,7 +592,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 2,
         width: '95%',
-        height: 50,
+        height: 70,
         color: 'white',
         backgroundColor: '#3EB489',
         justifyContent: 'center',

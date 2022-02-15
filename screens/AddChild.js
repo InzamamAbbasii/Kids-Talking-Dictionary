@@ -38,20 +38,21 @@ const AddChild = ({ navigation }) => {
           <View style={styles.textInput}>
             {/* <Icon name='person' size={30} color='#3EB489' /> */}
             <TextInput
-              style={{ padding: 5, fontSize: 18, width: '85%' }}
+              style={{ padding: 5, fontSize: 18, width: '85%', color: '#fff' }}
               placeholder="Name"
               placeholderTextColor="#3228"
               onChangeText={(name) => setName(name)}
             />
           </View>
-          <View style={{ flexDirection: 'row', backgroundColor: '#fff', alignItems: 'center', margin: 10, paddingHorizontal: 20, borderRadius: 30 }}>
-            <Text style={{ flex: 1, fontSize: 20, fontWeight: 'bold', textAlign: 'left' }}>Class</Text>
-            <Picker style={{ flex: 1 }}
+          <View style={{ flexDirection: 'row', backgroundColor: '#1bb', alignItems: 'center', margin: 10, paddingHorizontal: 20,borderWidth:1.5,borderColor:'#000',borderRadius:10 }}>
+            <Text style={{ flex: 1, fontSize: 20, fontWeight: 'bold', textAlign: 'left',color:'#fff' }}>Class</Text>
+            <Picker style={{ flex: 1, color: '#fff' }}
               selectedValue={selectedClass}
               onValueChange={(itemValue, itemIndex) =>
                 setSelectedClass(itemValue)
               }
               mode='dropdown'
+              itemStyle={{ backgroundColor: 'green' }}
             >
               <Picker.Item label="1" value="1" />
               <Picker.Item label="2" value="2" />
@@ -60,7 +61,8 @@ const AddChild = ({ navigation }) => {
               <Picker.Item label="5" value="5" />
             </Picker>
           </View>
-          <TouchableOpacity style={styles.btnSignUp} onPress={()=>addChild()}
+
+          <TouchableOpacity style={styles.btn} onPress={() => addChild()}
           >
             <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>Save</Text>
           </TouchableOpacity>
@@ -84,12 +86,13 @@ const styles = StyleSheet.create({
     // marginBottom:5,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#1bb',
     borderWidth: 1.5,
     borderColor: '#3EB489',
     borderRadius: 40,
     padding: 5,
     paddingLeft: 15,
+    borderWidth:1.5,borderColor:'#000',borderRadius:10,
     shadowColor: 'blue',
     shadowOffset: {
       width: 0,
@@ -99,23 +102,14 @@ const styles = StyleSheet.create({
     shadowRadius: 40,
     elevation: 6,
   },
-  btnSignUp: {
+  btn: {
     width: "95%",
-    borderRadius: 30,
-    height: 48,
+    borderRadius: 10,
+    height: 58,
     alignItems: "center",
     justifyContent: "center",
     alignSelf: 'center',
-    marginTop: 20,
-    backgroundColor: '#3EB489',
-  },
-  btnLogin: {
-    width: "100%",
-    borderRadius: 10,
-    height: 50,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 20,
-    borderWidth: 1
+    marginTop: 50,
+    backgroundColor: '#2c9971',
   },
 })

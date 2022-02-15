@@ -6,6 +6,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 const Home = ({ navigation }) => {
   var db = openDatabase({ name: 'KidsTalkingDictionaryDB.db', createFromLocation: 1 });
   const [data, setData] = useState([]);
+
+
   const getAllChilds = async () => {
     setData([]);
     db.transaction((tx) => {
