@@ -19,7 +19,7 @@ import MyWords from './screens/MyWords';
 import WordDetail from './screens/WordDetail';
 import SoundRecorder from './screens/SoundRecorder';
 import ListOfClasses from './screens/ListOfClasses';
-
+import EditWord from './screens/EditWord';
 
 import RNFetchBlob from 'react-native-fetch-blob';
 import RNFS, { exists } from 'react-native-fs';
@@ -102,6 +102,7 @@ function App({ navigation }) {
         <Stack.Screen name="WordDetail" component={WordDetail} />
         <Stack.Screen name="SoundRecorder" component={SoundRecorder} options={{title:'Add Word'}} />
         <Stack.Screen name="ListOfClasses" component={ListOfClasses} options={{title:'ListOfWords'}}/>
+        <Stack.Screen name="EditWord" component={EditWord} />
       </Stack.Navigator>
     </NavigationContainer>
   );

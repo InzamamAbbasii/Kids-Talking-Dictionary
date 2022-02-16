@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView, FlatList } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, ScrollView, FlatList,Alert } from 'react-native';
 import { openDatabase } from 'react-native-sqlite-storage';
 
 const ListOfWords = ({ navigation }) => {
@@ -7,9 +7,10 @@ const ListOfWords = ({ navigation }) => {
     const [data, setData] = useState([]);
     const getAllWords = () => {
         setData([]);
+        console.log('getting words..');
         db.transaction((tx) => {
             tx.executeSql(
-                'Select * from Words',
+                'SELECT * from Words',
                 [],
                 (tx, results) => {
                     if (results.rows.length > 0) {
@@ -27,29 +28,79 @@ const ListOfWords = ({ navigation }) => {
                             }])
                         }
                     } else {
-                        alert('No Child Found...')
+                        alert('No Record Found...')
                     }
                 }
             );
         })
     }
     useEffect(() => {
-        getAllWords();
+        const unsubscribe = navigation.addListener('focus', () => {
+            // The screen is focused
+            getAllWords();
+        });
+        // Return the function to unsubscribe from the event so it gets removed on unmount
+        return unsubscribe;
     }, []);
+    const deleteRecord = (id) => {
+        db.transaction((tx) => {
+            tx.executeSql(
+                'DELETE from Words WHERE Id=?',
+                [id],
+                (tx, results) => {
+                    if (results.rowsAffected > 0) {
+                        db.transaction((tx) => {
+                            tx.executeSql(
+                                'DELETE from AssignWords WHERE WordId=?',
+                                [id],
+                                (tx, results) => {
+                                    console.log('Results', results.rowsAffected);
+                                    if (results.rowsAffected > 0) {
+                                        Alert.alert(
+                                            'Done',
+                                            'Record Deleted Successfully',
+                                            [
+                                                {
+                                                    text: 'Ok',
+                                                    onPress: () => getAllWords(),
+                                                },
+                                            ],
+                                            { cancelable: false }
+                                        );
+                                    }
+                                }
+                            );
+                        });
+                    }
+                }
+            );
+        });
+    }
     const renderItem = ({ item }) => {
         return (
-            <TouchableOpacity style={styles.cardView} onPress={() => navigation.navigate('WordDetail', {
-                Id: item.Id,
-                Word: item.Word,
-                WordAudio: item.WordAudio,
-                Meaning: item.Meaning,
-                MeaningAudio: item.MeaningAudio,
-                Image: item.Base64Image
-            })}>
+            <View style={styles.cardView} >
                 <Text style={styles.card_title}>Word : {item.Word} </Text>
                 <Text style={[styles.card_title, { fontWeight: 'normal' }]}>Meaning : {item.Meaning} </Text>
                 <Text style={[styles.card_title, { fontWeight: 'normal' }]}>Class : {item.Class} </Text>
-            </TouchableOpacity>
+                <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                    <TouchableOpacity onPress={() => navigation.navigate('EditWord', {
+                        Id: item.Id,
+                        Word: item.Word,
+                        WordAudio: item.WordAudio,
+                        Meaning: item.Meaning,
+                        MeaningAudio: item.MeaningAudio,
+                        Class: item.Class,
+                        Image: item.Base64Image
+                    })}
+                        style={{ backgroundColor: '#000', height: 50, flex: 1, justifyContent: 'center', borderRadius: 10, margin: 5 }}>
+                        <Text style={{ color: '#fff', fontSize: 20, textAlign: 'center' }}> Edit </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => deleteRecord(item.Id)}
+                        style={{ backgroundColor: '#000', height: 50, flex: 1, justifyContent: 'center', borderRadius: 10, margin: 5 }}>
+                        <Text style={{ color: '#fff', fontSize: 20, textAlign: 'center' }}>Delete</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
         );
     }
     return (

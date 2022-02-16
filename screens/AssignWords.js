@@ -16,7 +16,8 @@ const AssignWords = ({ navigation, route }) => {
         setData([]);
         db.transaction((tx) => {
             tx.executeSql(
-                `SELECT * FROM Words Where Class=${route.params.Class}`,
+                // `SELECT * FROM Words Where Class=${route.params.Class}`,
+                `SELECT * FROM Words`,
                 [],
                 (tx, results) => {
                     if (results.rows.length > 0) {
@@ -145,10 +146,10 @@ export default AssignWords;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1, paddingTop: 30, backgroundColor: '#fff',
+        flex: 1,  backgroundColor: '#fff',
     },
     header: {
-        paddingBottom: 25, alignItems: 'center'
+        paddingBottom: 25, alignItems: 'center',
     },
     cardView: {
         flexDirection: 'row',
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
         height: 50,
         width: '95%',
         paddingHorizontal: 20,
-        marginVertical: 5,
+        marginVertical: 2,
         alignSelf: 'center'
     },
     card_title: {

@@ -13,12 +13,15 @@ import { Picker } from '@react-native-picker/picker';
 
 const audioRecorderPlayer = new AudioRecorderPlayer();
 const audioRecorderPlayerForMeaning = new AudioRecorderPlayer();
-const SoundRecorder = ({ navigation }) => {
+const EditWord = ({ navigation, route }) => {
+    console.log(route.params.Id);
+    console.log('...........');
     var db = openDatabase({ name: 'KidsTalkingDictionaryDB.db', createFromLocation: 1 });
-    const [word, setWord] = useState('');
-    const [meaning, setMeaning] = useState('');
+    const [id, setId] = useState(route.params.Id);
+    const [word, setWord] = useState(route.params.Word);
+    const [meaning, setMeaning] = useState(route.params.Meaning);
     const [image, setImage] = useState(null);
-    const [base64Image, setBase64Image] = useState(null);
+    const [base64Image, setBase64Image] = useState(route.params.Image);
 
     const [audioData, setAudioData] = useState([]);
     const [audioData1, setAudioData1] = useState([]);
@@ -31,12 +34,12 @@ const SoundRecorder = ({ navigation }) => {
     const [wordBase64Audio, setWordBase64Audio] = useState(null);
     const [meaningBase64Audio, setMeaningBase64Audio] = useState(null);
 
-    const [wordAudioURL, setWordAudioURL] = useState(null);
-    const [meaningAudioURL, setMeaningAudioURL] = useState(null);
+    const [wordAudioURL, setWordAudioURL] = useState(route.params.WordAudio);
+    const [meaningAudioURL, setMeaningAudioURL] = useState(route.params.MeaningAudio);
     const [permission, setPermission] = useState(false);
-    const [selectedClass, setSelectedClass] = useState('1');
-    let filename = new Date().getUTCDay().toString()+new Date().getUTCDate().toString()+new Date().getFullYear().toString()+new Date().getTime().toString();
-    
+    const [selectedClass, setSelectedClass] = useState(route.params.Class);
+    let filename = new Date().getUTCDay().toString() + new Date().getUTCDate().toString() + new Date().getFullYear().toString() + new Date().getTime().toString();
+
     const getPermisssion = async () => {
         if (Platform.OS === 'android') {
             try {
@@ -88,10 +91,10 @@ const SoundRecorder = ({ navigation }) => {
                     if (word.length == 0) {
                         alert('Please Enter Word')
                     } else {
-                        console.log(',,,,',filename);
+                        console.log(',,,,', filename);
                         const path = Platform.select({
                             ios: 'word.m4a',
-                            android: `${dirs.MusicDir}/${word+filename}.mp3`,
+                            android: `${dirs.MusicDir}/${word + filename}.mp3`,
                         });
                         console.log(path);
                         console.log('........................................');
@@ -164,11 +167,11 @@ const SoundRecorder = ({ navigation }) => {
                     if (meaning.length == 0) {
                         alert(`Please Enter Meaning of "${word}"`)
                     } else {
-                        let filename = word+'Meaning'+new Date().getUTCDay().toString()+new Date().getUTCDate().toString()+new Date().getFullYear().toString()+new Date().getTime().toString();
+                        let filename = word + 'Meaning' + new Date().getUTCDay().toString() + new Date().getUTCDate().toString() + new Date().getFullYear().toString() + new Date().getTime().toString();
                         console.log(filename);
                         const path = Platform.select({
                             ios: 'meaning.m4a',
-                            android: `${dirs.MusicDir}/${word+'Meaning'+filename}.mp3`,
+                            android: `${dirs.MusicDir}/${word + 'Meaning' + filename}.mp3`,
                         });
                         console.log(path);
                         const uri = await audioRecorderPlayer.startRecorder(path);
@@ -219,7 +222,7 @@ const SoundRecorder = ({ navigation }) => {
     };
 
     const onStartPlay = async (params) => {
-      console.log(wordAudioURL);
+        console.log(wordAudioURL);
         const dirs = RNFetchBlob.fs.dirs;
         if (params == 'word') {
             const path = Platform.select({
@@ -299,28 +302,27 @@ const SoundRecorder = ({ navigation }) => {
         }).catch(error => console.log('Error from gallary', error));
     }
 
-    const save = async () => {
+    const editData = async () => {
+        console.log('save');
         if (word.length == 0) {
             alert('Please Enter Word!')
-        } else if (wordBase64Audio == null || wordAudioURL == null) {
-            alert('please record word audio')
-        } else if (meaning.length == 0) {
+        }  else if (meaning.length == 0) {
             alert('Please Enter Word Meaning!')
-        } else if (meaningBase64Audio == null || meaningAudioURL == null) {
-            alert('please record meaning audio')
         } else if (base64Image == null) {
             alert('Please Choose Image!')
         } else {
             console.log('word', wordAudioURL);
             console.log('meaning', meaningAudioURL);
+            console.log(word, wordAudioURL, meaning, meaningAudioURL, selectedClass,id);
             // storing URL of recording in database
             db.transaction((tx) => {
                 tx.executeSql(
-                    'Insert into Words(Word,WordAudio,Meaning,MeaningAudio,Image,Class) Values (?,?,?,?,?,?)',
-                    [word, wordAudioURL, meaning, meaningAudioURL, base64Image, selectedClass],
+                    'Update Words set Word=?,WordAudio=?,Meaning=?,MeaningAudio=?,Image=?,Class=? Where Id=?',
+                    [word, wordAudioURL, meaning, meaningAudioURL, base64Image, selectedClass,id],
                     (tx, results) => {
+                        console.log(results);
                         if (results.rowsAffected > 0) {
-                            alert('Word Added Successfully!')
+                            alert('Record Updated Successfully!')
                             // alert('Login Successfully')
                         } else {
                             alert('somting went wrong.')
@@ -355,6 +357,7 @@ const SoundRecorder = ({ navigation }) => {
                         style={{ fontSize: 18, flex: 2, backgroundColor: '#fff', color: '#000' }}
                         placeholder="Enter Word"
                         placeholderTextColor="#3228"
+                        value={word}
                         onChangeText={(txt) => setWord(txt)}
                     />
                 </View>
@@ -439,6 +442,7 @@ const SoundRecorder = ({ navigation }) => {
                         style={{ fontSize: 18, flex: 2, backgroundColor: '#fff', color: '#000' }}
                         placeholder="Enter Meaning"
                         placeholderTextColor="#3228"
+                        value={meaning}
                         onChangeText={(txt) => setMeaning(txt)}
                     />
                 </View>
@@ -516,12 +520,12 @@ const SoundRecorder = ({ navigation }) => {
                 </View>
 
 
-                {/* <View style={[styles.cardView, { flexDirection: 'row', height: 70, backgroundColor: '#2c9' }]} >
+                <View style={[styles.cardView, { flexDirection: 'row', height: 70, backgroundColor: '#2c9' }]} >
                     <Text style={{ flex: 1, fontSize: 20, fontWeight: 'bold', textAlign: 'left', color: '#000' }}> Select Class</Text>
                     <Picker style={{ flex: 1, color: '#000', backgroundColor: '#fff', }}
                         selectedValue={selectedClass}
                         onValueChange={(itemValue, itemIndex) =>
-                            // setSelectedClass(itemValue)
+                            setSelectedClass(itemValue)
                         }
                         mode='dropdown'
                     >
@@ -531,7 +535,7 @@ const SoundRecorder = ({ navigation }) => {
                         <Picker.Item label="4" value="4" />
                         <Picker.Item label="5" value="5" />
                     </Picker>
-                </View> */}
+                </View> 
 
 
 
@@ -542,27 +546,25 @@ const SoundRecorder = ({ navigation }) => {
                     }}
                         onPress={() => choosePhotoFromLibrary()}>
                         {
-                            image == null ? (<Text style={{ fontSize: 25, fontWeight: 'bold', alignSelf: 'center' }}>Choose image</Text>) : (
-                                <Image
-                                    style={{
-                                        flex: 1,
-                                        resizeMode: 'contain',
-                                    }}
-                                    source={{ uri: image, }} />
-                            )
+                            <Image
+                                style={{
+                                    flex: 1,
+                                    resizeMode: 'contain',
+                                }}
+                                source={{ uri: `data:image/jpeg;base64,${base64Image}` }} />
                         }
 
                     </TouchableOpacity>
                 </View>
 
-                <TouchableOpacity style={styles.btnTouchable} onPress={() => save()}>
-                    <Text style={[styles.card_title, { textAlign: 'center' }]}>ADD</Text>
+                <TouchableOpacity style={styles.btnTouchable} onPress={() => editData()}>
+                    <Text style={[styles.card_title, { textAlign: 'center' }]}> Save </Text>
                 </TouchableOpacity>
             </ScrollView>
         </View>
     );
 }
-export default SoundRecorder;
+export default EditWord;
 
 const styles = StyleSheet.create({
     container: {
